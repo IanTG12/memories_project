@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
 import React from "react";
 import { Box } from "@mui/material";
 import { formatMs, requirePropFactory } from "@material-ui/core";
@@ -21,10 +22,37 @@ import { useDispatch } from "react-redux";
 import { deletePost, likePost } from "../../../actions/posts";
 
 const Post = ({ post, setCurrentId }) => {
-  console.log("post test");
-  console.log(post);
   const imagePost = post.selectedFile;
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"));
+
+  const Likes = () => {
+    if (post.likes.length > 0) {
+      return post.likes.find(
+        (like) => like === (user?.result?.googleId || user?.result?._id)
+      ) ? (
+        <>
+          <ThumbUpAltIcon fontSize="small" />
+          &nbsp;
+          {post.likes.length > 2
+            ? `You and ${post.likes.length - 1} others`
+            : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+        </>
+      ) : (
+        <>
+          <ThumbUpAltOutlined fontSize="small" />
+          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <ThumbUpAltOutlined fontSize="small" />
+        &nbsp;Like
+      </>
+    );
+  };
 
   return (
     //Card uses card stle
@@ -43,7 +71,10 @@ const Post = ({ post, setCurrentId }) => {
         style={{
           height: "50%",
           width: "100%",
-
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          position: "relative",
           backroundColor: "rgba(0, 0, 0, 0.5)",
           backgroundBlendMode: "darken",
           //OLD STYLES
@@ -123,13 +154,12 @@ const Post = ({ post, setCurrentId }) => {
         <Button
           size="small"
           color="primary"
+          disabled={!user?.result}
           onClick={() => {
             dispatch(likePost(post._id));
           }}
         >
-          <ThumbUpAltIcon fontSize="small" />
-          &nbsp; Like &nbsp;
-          {post.likeCount}
+          <Likes />
         </Button>
         <Button
           size="small"

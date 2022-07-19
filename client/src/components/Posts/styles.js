@@ -1,14 +1,30 @@
-import { makeStyles } from "@material-ui/core/styles";
+//Old way
+// import { makeStyles } from "@material-ui/core/styles";
 
-export default makeStyles((theme) => ({
+// export default makeStyles((theme) => ({
+//   mainContainer: {
+//     display: "flex",
+//     alignItems: "center",
+//   },
+//   smMargin: {
+//     margin: theme.spacing(1),
+//   },
+//   actionDiv: {
+//     textAlign: "center",
+//   },
+// }));
+
+const postsStyles = {
   mainContainer: {
     display: "flex",
     alignItems: "center",
   },
-  smMargin: {
-    margin: theme.spacing(1),
-  },
+  // smMargin: {
+  //   margin: theme.spacing(1),
+  // },
   actionDiv: {
     textAlign: "center",
   },
-}));
+};
+
+export default postsStyles;

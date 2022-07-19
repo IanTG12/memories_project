@@ -3,6 +3,8 @@ import React from "react";
 import Post from "./Post/Post";
 import { useSelector } from "react-redux";
 import { Grid, CircularProgress } from "@mui/material";
+import PostsStyles from "./styles";
+const postsStyles = PostsStyles.mainContainer;
 
 //accepting setCurrentId as a prop
 const Posts = ({ setCurrentId }) => {
@@ -21,7 +23,7 @@ const Posts = ({ setCurrentId }) => {
     ) : (
       //Creates a grid to hold the post requests as cards,  stretch prop makes the card stretch vertically, spacing seperates the cards
       //GRID uses the maincontainer style
-      <Grid container alignItems="stretch" spacing={3}>
+      <Grid style={postsStyles} container alignItems="stretch" spacing={3}>
         {posts.map((post) => (
           <Grid key={post._id} item xs={12} sm={6}>
             <Post post={post} setCurrentId={setCurrentId} />

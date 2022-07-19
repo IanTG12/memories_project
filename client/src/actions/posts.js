@@ -4,7 +4,13 @@
 //The function createPosts is exported to components/Form/Form.js where it is dispatched
 
 import * as api from "../api";
-
+import {
+  FETCH_ALL,
+  CREATE,
+  UPDATE,
+  DELETE,
+  LIKE_POST,
+} from "../constants/actionTypes";
 //Action creators - Functions that return an action
 //Action - Object that contains the "type" and a "payload"
 //THUNK - redux thunk allows us to specify an additional arrow function
@@ -49,9 +55,11 @@ export const deletePost = (id) => async (dispatch) => {
 };
 
 export const likePost = (id) => async (dispatch) => {
+  const user = JSON.parse(localStorage.getItem("profile"));
+  window.location.reload(true);
   try {
-    const { data } = await api.likePost(id);
-    dispatch({ type: "LIKE_POST", payload: data });
+    const { data } = await api.likePost(id, user?.token);
+    dispatch({ type: "LIKE", payload: data });
   } catch (error) {
     console.log(error);
   }

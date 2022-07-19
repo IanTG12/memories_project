@@ -2,20 +2,21 @@
 //This document also dispatches actions based on what is entered within the forms text fields
 
 import React, { useState, useEffect } from "react";
-import myStyles from "./styles";
-import { Box } from "@mui/material";
+import MyStyles from "./styles";
+import { Box, ThemeProvider } from "@mui/material";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import { current } from "@reduxjs/toolkit";
 
-const formStyles = myStyles.test;
+const divStyle = MyStyles.fileInput;
+const button1Style = MyStyles.buttonSubmit;
+const user = JSON.parse(localStorage.getItem("profile"));
 
 //Form is accepting currentId, and setCurrentId as props
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
@@ -36,25 +37,35 @@ const Form = ({ currentId, setCurrentId }) => {
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
       selectedFile: "",
     });
-    console.log(postData.selectedFile);
+    console.log("clear");
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     //if we have a currentId then dispatch updatePost, else dispatch createPost
-    if (currentId) {
-      dispatch(updatePost(currentId, postData));
+    if (currentId === 0) {
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      clear();
     } else {
-      dispatch(createPost(postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
+      clear();
     }
-    clear();
   };
-
+  if (!user?.result?.name) {
+    return (
+      <Paper>
+        <Typography variant="h6" align="center">
+          Please sign in
+        </Typography>
+      </Paper>
+    );
+  }
   return (
     //Paper is like a div with off white backround
     //Paper uses the PAPER class - for some reason cant use theme
@@ -64,16 +75,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h6">
           {currentId ? "Editing" : "Creating"} a Memory
         </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
+
         <TextField
           name="title"
           variant="outlined"
@@ -104,7 +106,7 @@ const Form = ({ currentId, setCurrentId }) => {
           }
         />
         {/* this DIV uses the fileInput class */}
-        <div style={{ width: "97%", margin: "10px 0" }}>
+        <div style={divStyle}>
           <FileBase
             type="file"
             multiple={false}
@@ -115,9 +117,7 @@ const Form = ({ currentId, setCurrentId }) => {
         </div>
         {/* This Button uses the buttonSubmit class */}
         <Button
-          style={{
-            marginBottom: 10,
-          }}
+          style={button1Style}
           variant="contained"
           color="primary"
           size="large"
